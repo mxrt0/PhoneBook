@@ -52,8 +52,30 @@ namespace PhoneBook.Controllers
                 case MenuOption.UpdateContact:
                     UpdateContact();
                     break;
+                case MenuOption.ViewContact:
+                    ViewContact();
+                    break;
             }
             MainMenu();
+        }
+
+        private void ViewContact()
+        {
+            Console.Clear();
+
+            Console.WriteLine(Messages.ContactNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            string contactName = GetContactNameInput();
+            while (!_dbContext.Contacts.Any(contact => contact.Name == contactName))
+            {
+                Console.WriteLine(Messages.ContactDoesNotExistMessage);
+                contactName = GetContactNameInput();
+            }
+            var contact = _dbContext.Contacts.First(contact => contact.Name == contactName);
+            Console.WriteLine(contact);
+
+            Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
+            Console.ReadKey();
         }
 
         private void UpdateContact()
@@ -75,7 +97,7 @@ namespace PhoneBook.Controllers
 
             var contactToUpdate = _dbContext.Contacts.First(contact => contact.Id == contactToUpdateId);
 
-            Console.WriteLine(Messages.AddContactNameMessage);
+            Console.WriteLine(Messages.ContactNameMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? newName = GetContactNameInput();
             contactToUpdate.Name = newName;
@@ -126,7 +148,7 @@ namespace PhoneBook.Controllers
         {
             Console.Clear();
 
-            Console.WriteLine(Messages.AddContactNameMessage);
+            Console.WriteLine(Messages.ContactNameMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? nameInput = GetContactNameInput();
 

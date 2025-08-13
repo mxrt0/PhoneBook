@@ -16,15 +16,15 @@ namespace PhoneBook.Utils
 
         // Add contact
 
-        public static readonly string AddContactNameMessage = "\nEnter the name of your contact:\n";
+        public static readonly string ContactNameMessage = "\nEnter the name of the contact:\n";
 
         public static readonly string InvalidContactNameMessage = "\nInvalid name. Please enter a non-empty string containing at least 1 letter!\n";
 
-        public static readonly string AddContactEmailMessage = "\nEnter the e-mail of your contact:\n";
+        public static readonly string AddContactEmailMessage = "\nEnter the e-mail of the contact:\n";
 
         public static readonly string InvalidContactEmailMessage = "\nInvalid e-mail. Left part must have at least 1 letter, there should a domain section (e.g. xyz.com) and an @ separating the two parts!\n";
 
-        public static readonly string AddContactPhoneMessage = "\nEnter the phone number of your contact (max length 20):\n";
+        public static readonly string AddContactPhoneMessage = "\nEnter the phone number of the contact (max length 20):\n";
 
         public static readonly string InvalidContactPhoneMessage = "\nInvalid phone number. Must be at most 20 characters, start with an optional '+', contain only digits, and may include dashes '-' between digits.\n";
 
@@ -33,7 +33,7 @@ namespace PhoneBook.Utils
         // Delete
         public static readonly string DeleteContactIdMessage = "\nEnter the ID of the contact you wish to delete:\n";
 
-        public static readonly string ContactDoesNotExistMessage = "\nContact with this ID doesn't exist. Try again!\n";
+        public static readonly string ContactDoesNotExistMessage = "\nContact with this name/ID doesn't exist. Try again!\n";
 
         public static readonly string InvalidIdMessage = "\nInvalid ID. Please enter a positive integer!\n";
 
