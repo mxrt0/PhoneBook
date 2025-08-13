@@ -20,6 +20,8 @@ namespace PhoneBook.Controllers
 
         private void MainMenu()
         {
+            Console.Clear();
+
             Console.WriteLine(Messages.MainMenuMessage);
             UIHelper.DisplayOptions();
 
@@ -47,16 +49,58 @@ namespace PhoneBook.Controllers
                 case MenuOption.DeleteContact:
                     DeleteContact();
                     break;
+                case MenuOption.UpdateContact:
+                    UpdateContact();
+                    break;
             }
             MainMenu();
+        }
+
+        private void UpdateContact()
+        {
+            Console.Clear();
+            PrintContacts();
+
+            Console.WriteLine(Messages.UpdateContactIdMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+
+            int contactToUpdateId = GetContactIdInput();
+
+            while (!_dbContext.Contacts.Any(contact => contact.Id == contactToUpdateId))
+            {
+                Console.WriteLine(Messages.ContactDoesNotExistMessage);
+                Console.WriteLine(Messages.ReturnToMainMenuMessage);
+                contactToUpdateId = GetContactIdInput();
+            }
+
+            var contactToUpdate = _dbContext.Contacts.First(contact => contact.Id == contactToUpdateId);
+
+            Console.WriteLine(Messages.AddContactNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            string? newName = GetContactNameInput();
+            contactToUpdate.Name = newName;
+
+            Console.WriteLine(Messages.AddContactEmailMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            string? newEmail = GetContactEmailInput();
+            contactToUpdate.Email = newEmail;
+
+            Console.WriteLine(Messages.AddContactPhoneMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            string? newPhoneNumber = GetContactPhoneInput();
+            contactToUpdate.PhoneNumber = newPhoneNumber;
+
+            _dbContext.SaveChanges();
+            Console.WriteLine(string.Format(Messages.SuccessfullyUpdatedContactMessage, contactToUpdateId));
+
+            Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
+            Console.ReadKey();
         }
 
         private void DeleteContact()
         {
             Console.Clear();
-
-            Console.WriteLine("\nYour contacts:\n");
-            Console.WriteLine(string.Join(Environment.NewLine, _dbContext.Contacts.ToList()));
+            PrintContacts();
 
             Console.WriteLine(Messages.DeleteContactIdMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
@@ -72,8 +116,8 @@ namespace PhoneBook.Controllers
 
             _dbContext.Contacts.Remove(_dbContext.Contacts.First(c => c.Id == contactToDeleteId));
             _dbContext.SaveChanges();
-
             Console.WriteLine(string.Format(Messages.SuccessfullyDeletedContactMessage, contactToDeleteId));
+
             Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
             Console.ReadKey();
         }
@@ -97,8 +141,8 @@ namespace PhoneBook.Controllers
             var newContact = new Contact(nameInput, emailInput, phoneInput);
             _dbContext.Contacts.Add(newContact);
             _dbContext.SaveChanges();
-
             Console.WriteLine(Messages.SuccessfullyAddedContactMessage);
+
             Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
             Console.ReadKey();
         }
@@ -167,6 +211,12 @@ namespace PhoneBook.Controllers
                 CheckReturnToMainMenu(phoneInput);
             }
             return phoneInput!;
+        }
+
+        private void PrintContacts()
+        {
+            Console.WriteLine("\nYour contacts:\n");
+            Console.WriteLine(string.Join(Environment.NewLine, _dbContext.Contacts.ToList()));
         }
     }
 }

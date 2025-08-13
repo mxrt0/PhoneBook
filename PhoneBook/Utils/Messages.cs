@@ -16,15 +16,15 @@ namespace PhoneBook.Utils
 
         // Add contact
 
-        public static readonly string AddContactNameMessage = "\nEnter the name of your new contact:\n";
+        public static readonly string AddContactNameMessage = "\nEnter the name of your contact:\n";
 
         public static readonly string InvalidContactNameMessage = "\nInvalid name. Please enter a non-empty string containing at least 1 letter!\n";
 
-        public static readonly string AddContactEmailMessage = "\nEnter the e-mail of your new contact:\n";
+        public static readonly string AddContactEmailMessage = "\nEnter the e-mail of your contact:\n";
 
         public static readonly string InvalidContactEmailMessage = "\nInvalid e-mail. Left part must have at least 1 letter, there should a domain section (e.g. xyz.com) and an @ separating the two parts!\n";
 
-        public static readonly string AddContactPhoneMessage = "\nEnter the phone number of your new contact (max length 20):\n";
+        public static readonly string AddContactPhoneMessage = "\nEnter the phone number of your contact (max length 20):\n";
 
         public static readonly string InvalidContactPhoneMessage = "\nInvalid phone number. Must be at most 20 characters, start with an optional '+', contain only digits, and may include dashes '-' between digits.\n";
 
@@ -38,6 +38,12 @@ namespace PhoneBook.Utils
         public static readonly string InvalidIdMessage = "\nInvalid ID. Please enter a positive integer!\n";
 
         public static readonly string SuccessfullyDeletedContactMessage = "\nSuccessfully deleted contact with ID {0}!\n";
+
+        // Update
+        public static readonly string UpdateContactIdMessage = "\nEnter the ID of the contact you wish to update:\n";
+
+        public static readonly string SuccessfullyUpdatedContactMessage = "\nSuccessfully updated contact with ID {0}!\n";
+
 
     }
 }
