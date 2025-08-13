@@ -1,0 +1,27 @@
+﻿using System.Text;
+
+namespace PhoneBook.Entities;
+
+public class Contact
+{
+    public Contact(string name, string email, string phoneNumber)
+    {
+        Name = name;
+        Email = email;
+        PhoneNumber = phoneNumber;
+    }
+
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine(new string('-', 30));
+        sb.AppendLine($"ID: {Id}\nName: {Name}\nE-mail: {Email}\nPhone Number: {PhoneNumber}");
+        sb.AppendLine(new string('-', 30));
+        return sb.ToString().TrimEnd();
+    }
+}
