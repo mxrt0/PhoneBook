@@ -6,5 +6,9 @@ public enum MenuOption
     AddContact,
     DeleteContact,
     UpdateContact,
-    ViewContact
+    ViewContact,
+    AddCategory,
+    DeleteCategory,
+    UpdateCategory,
+    ViewCategory,
 }

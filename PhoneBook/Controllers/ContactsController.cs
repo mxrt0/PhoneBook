@@ -55,8 +55,101 @@ namespace PhoneBook.Controllers
                 case MenuOption.ViewContact:
                     ViewContact();
                     break;
+                case MenuOption.AddCategory:
+                    AddNewCategory();
+                    break;
+                case MenuOption.DeleteCategory:
+                    DeleteCategory();
+                    break;
+                case MenuOption.UpdateCategory:
+                    UpdateCategory();
+                    break;
+                case MenuOption.ViewCategory:
+                    ViewCategory();
+                    break;
             }
             MainMenu();
+        }
+
+        private void ViewCategory()
+        {
+            Console.Clear();
+            Console.WriteLine(Messages.CategoryNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            var category = GetExistingContactCategoryInput();
+
+            Console.WriteLine($"\nCategory {category.Name}:");
+            Console.WriteLine(string.Join(Environment.NewLine, _dbContext.Contacts.ToList().Where(c => c.CategoryId == category.Id)));
+
+            Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
+            Console.ReadKey();
+        }
+
+        private void UpdateCategory()
+        {
+            Console.Clear();
+
+            Console.WriteLine(Messages.CategoryToUpdateNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            var category = GetExistingContactCategoryInput();
+
+            Console.WriteLine(Messages.CategoryNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            string? categoryInput = GetValidCategoryInput();
+
+            while (_dbContext.Categories.ToList().Any(c => string.Equals(c.Name, categoryInput, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine(Messages.CategoryAlreadyExistsMessage);
+                Console.WriteLine(Messages.ReturnToMainMenuMessage);
+                categoryInput = GetValidCategoryInput();
+            }
+
+            category.Name = categoryInput;
+            _dbContext.SaveChanges();
+
+            Console.WriteLine(Messages.SuccessfullyUpdatedCategoryMessage);
+            Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
+            Console.ReadKey();
+        }
+
+        private void DeleteCategory()
+        {
+            Console.Clear();
+
+            Console.WriteLine(Messages.CategoryToDeleteNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            var category = GetExistingContactCategoryInput();
+
+            _dbContext.Categories.Remove(category);
+            _dbContext.SaveChanges();
+
+            Console.WriteLine(string.Format(Messages.SuccessfullyDeletedCategoryMessage, category.Name));
+            Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
+            Console.ReadKey();
+        }
+
+        private void AddNewCategory()
+        {
+            Console.Clear();
+
+            Console.WriteLine(Messages.CategoryNameMessage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            string? categoryInput = GetValidCategoryInput();
+
+            while (_dbContext.Categories.ToList().Any(c => string.Equals(c.Name, categoryInput, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine(Messages.CategoryAlreadyExistsMessage);
+                Console.WriteLine(Messages.ReturnToMainMenuMessage);
+                categoryInput = GetValidCategoryInput();
+            }
+
+            var newCategory = new ContactsCategory(categoryInput);
+            _dbContext.Categories.Add(newCategory);
+            _dbContext.SaveChanges();
+
+            Console.WriteLine(string.Format(Messages.SuccessfullyAddedCategoryMessage, categoryInput));
+            Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
+            Console.ReadKey();
         }
 
         private void ViewContact()
@@ -66,12 +159,12 @@ namespace PhoneBook.Controllers
             Console.WriteLine(Messages.ContactNameMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string contactName = GetContactNameInput();
-            while (!_dbContext.Contacts.Any(contact => contact.Name == contactName))
+            while (!_dbContext.Contacts.ToList().Any(contact => string.Equals(contact.Name, contactName, StringComparison.OrdinalIgnoreCase)))
             {
                 Console.WriteLine(Messages.ContactDoesNotExistMessage);
                 contactName = GetContactNameInput();
             }
-            var contact = _dbContext.Contacts.First(contact => contact.Name == contactName);
+            var contact = _dbContext.Contacts.ToList().First(contact => string.Equals(contact.Name, contactName, StringComparison.OrdinalIgnoreCase));
             Console.WriteLine(contact);
 
             Console.WriteLine(Messages.PressAnyKeyToContinueMessage);
@@ -102,12 +195,12 @@ namespace PhoneBook.Controllers
             string? newName = GetContactNameInput();
             contactToUpdate.Name = newName;
 
-            Console.WriteLine(Messages.AddContactEmailMessage);
+            Console.WriteLine(Messages.ContactEmailMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? newEmail = GetContactEmailInput();
             contactToUpdate.Email = newEmail;
 
-            Console.WriteLine(Messages.AddContactPhoneMessage);
+            Console.WriteLine(Messages.ContactPhoneMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? newPhoneNumber = GetContactPhoneInput();
             contactToUpdate.PhoneNumber = newPhoneNumber;
@@ -152,15 +245,21 @@ namespace PhoneBook.Controllers
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? nameInput = GetContactNameInput();
 
-            Console.WriteLine(Messages.AddContactEmailMessage);
+            Console.WriteLine(Messages.ContactEmailMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? emailInput = GetContactEmailInput();
 
-            Console.WriteLine(Messages.AddContactPhoneMessage);
+            Console.WriteLine(Messages.ContactPhoneMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
             string? phoneInput = GetContactPhoneInput();
 
+            Console.WriteLine(Messages.ContactCategoryMesage);
+            Console.WriteLine(Messages.ReturnToMainMenuMessage);
+            var category = GetExistingContactCategoryInput();
+
             var newContact = new Contact(nameInput, emailInput, phoneInput);
+            newContact.SetCategory(category);
+
             _dbContext.Contacts.Add(newContact);
             _dbContext.SaveChanges();
             Console.WriteLine(Messages.SuccessfullyAddedContactMessage);
@@ -233,6 +332,31 @@ namespace PhoneBook.Controllers
                 CheckReturnToMainMenu(phoneInput);
             }
             return phoneInput!;
+        }
+
+        private ContactsCategory GetExistingContactCategoryInput()
+        {
+            string? categoryName = GetValidCategoryInput();
+            while (!_dbContext.Categories.ToList().Any(c => string.Equals(c.Name, categoryName, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine(Messages.CategoryNameDoesNotExistMessage);
+                categoryName = GetValidCategoryInput();
+            }
+            return _dbContext.Categories.ToList().First(c => string.Equals(c.Name, categoryName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private string GetValidCategoryInput()
+        {
+            string? categoryInput = Console.ReadLine();
+            CheckReturnToMainMenu(categoryInput);
+
+            while (string.IsNullOrEmpty(categoryInput) || !categoryInput.Any(char.IsLetter))
+            {
+                Console.WriteLine(Messages.InvalidContactNameMessage);
+                Console.WriteLine(Messages.ReturnToMainMenuMessage);
+                categoryInput = Console.ReadLine();
+            }
+            return categoryInput;
         }
 
         private void PrintContacts()
