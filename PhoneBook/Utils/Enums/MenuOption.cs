@@ -11,4 +11,5 @@ public enum MenuOption
     DeleteCategory,
     UpdateCategory,
     ViewCategory,
+
 }

@@ -57,6 +57,8 @@ namespace PhoneBook.Utils
         public static readonly string CategoryToUpdateNameMessage = "\nEnter the name of the category you wish to update:\n";
 
         public static readonly string SuccessfullyUpdatedCategoryMessage = "\nSuccessfully updated category!\n";
+
+        public static readonly string EmailMessage = "\nEnter the message you wish to send to the contact's email:\n";
     }
 }
 

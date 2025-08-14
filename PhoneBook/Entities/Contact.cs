@@ -22,7 +22,7 @@ public class Contact
     {
         var sb = new StringBuilder();
         sb.AppendLine(new string('-', 30));
-        sb.AppendLine($"ID: {Id}\nName: {Name}\nE-mail: {Email}\nPhone Number: {PhoneNumber}");
+        sb.AppendLine($"ID: {Id}\nName: {Name}\nE-mail: {Email}\nPhone Number: {PhoneNumber}\nCategory: {Category?.Name}");
         sb.AppendLine(new string('-', 30));
         return sb.ToString().TrimEnd();
     }

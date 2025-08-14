@@ -67,6 +67,7 @@ namespace PhoneBook.Controllers
                 case MenuOption.ViewCategory:
                     ViewCategory();
                     break;
+
             }
             MainMenu();
         }
@@ -88,6 +89,7 @@ namespace PhoneBook.Controllers
         private void UpdateCategory()
         {
             Console.Clear();
+            PrintCategories();
 
             Console.WriteLine(Messages.CategoryToUpdateNameMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
@@ -115,6 +117,7 @@ namespace PhoneBook.Controllers
         private void DeleteCategory()
         {
             Console.Clear();
+            PrintCategories();
 
             Console.WriteLine(Messages.CategoryToDeleteNameMessage);
             Console.WriteLine(Messages.ReturnToMainMenuMessage);
@@ -279,7 +282,7 @@ namespace PhoneBook.Controllers
         private int GetContactIdInput()
         {
             string? contactToDeleteIdInput = Console.ReadLine();
-
+            CheckReturnToMainMenu(contactToDeleteIdInput);
             int contactToDeleteId = 0;
             while (!int.TryParse(contactToDeleteIdInput, out contactToDeleteId) || contactToDeleteId <= 0)
             {
@@ -337,6 +340,8 @@ namespace PhoneBook.Controllers
         private ContactsCategory GetExistingContactCategoryInput()
         {
             string? categoryName = GetValidCategoryInput();
+            CheckReturnToMainMenu(categoryName);
+
             while (!_dbContext.Categories.ToList().Any(c => string.Equals(c.Name, categoryName, StringComparison.OrdinalIgnoreCase)))
             {
                 Console.WriteLine(Messages.CategoryNameDoesNotExistMessage);
@@ -363,6 +368,12 @@ namespace PhoneBook.Controllers
         {
             Console.WriteLine("\nYour contacts:\n");
             Console.WriteLine(string.Join(Environment.NewLine, _dbContext.Contacts.ToList()));
+        }
+
+        private void PrintCategories()
+        {
+            Console.WriteLine("\nYour categories:\n");
+            Console.WriteLine(string.Join(Environment.NewLine, _dbContext.Categories.ToList().Select(c => c.Name)));
         }
     }
 }
